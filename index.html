@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Vijay Wins? 🗳️ Ask the AI Oracle</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+
+    h1 {
+      color: #FFD700;
+      font-size: 1.5rem;
+      text-align: center;
+      margin-bottom: 4px;
+      text-shadow: 0 0 20px rgba(255,215,0,0.5);
+    }
+    .subtitle { color: #aaa; font-size: 0.8rem; text-align: center; margin-bottom: 12px; }
+
+    /* Lead form */
+    #lead-section {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,215,0,0.3);
+      border-radius: 16px;
+      padding: 24px;
+      width: 100%;
+      max-width: 420px;
+      text-align: center;
+    }
+    #lead-section h2 { color: #FFD700; margin-bottom: 8px; font-size: 1.1rem; }
+    #lead-section p { color: #ccc; font-size: 0.85rem; margin-bottom: 16px; }
+    #lead-section input {
+      width: 100%;
+      padding: 10px 14px;
+      border-radius: 8px;
+      border: 1px solid rgba(255,215,0,0.4);
+      background: rgba(255,255,255,0.08);
+      color: #fff;
+      font-size: 0.9rem;
+      margin-bottom: 10px;
+      outline: none;
+    }
+    #lead-section input::placeholder { color: #888; }
+    #lead-section button {
+      width: 100%;
+      padding: 12px;
+      background: linear-gradient(90deg, #FFD700, #FFA500);
+      color: #000;
+      font-weight: 700;
+      font-size: 1rem;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    #lead-section button:hover { opacity: 0.9; }
+
+    /* Chat section */
+    #chat-section { display: none; width: 100%; max-width: 420px; }
+
+    #chat-box {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,215,0,0.2);
+      border-radius: 16px;
+      height: 380px;
+      overflow-y: auto;
+      padding: 14px;
+      margin-bottom: 10px;
+      scroll-behavior: smooth;
+    }
+
+    .msg {
+      margin-bottom: 12px;
+      display: flex;
+      flex-direction: column;
+    }
+    .msg.user { align-items: flex-end; }
+    .msg.bot  { align-items: flex-start; }
+
+    .bubble {
+      max-width: 85%;
+      padding: 10px 14px;
+      border-radius: 14px;
+      font-size: 0.88rem;
+      line-height: 1.5;
+    }
+    .user .bubble {
+      background: linear-gradient(90deg, #FFD700, #FFA500);
+      color: #000;
+      font-weight: 600;
+      border-bottom-right-radius: 4px;
+    }
+    .bot .bubble {
+      background: rgba(255,255,255,0.1);
+      color: #eee;
+      border-bottom-left-radius: 4px;
+      border: 1px solid rgba(255,215,0,0.15);
+    }
+    .bot .bubble .emoji { font-size: 1.2rem; }
+
+    /* Options buttons */
+    .options { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 6px; }
+    .opt-btn {
+      background: rgba(255,215,0,0.15);
+      border: 1px solid rgba(255,215,0,0.4);
+      color: #FFD700;
+      padding: 7px 12px;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 0.8rem;
+      transition: all 0.2s;
+    }
+    .opt-btn:hover { background: rgba(255,215,0,0.3); }
+
+    /* Input row */
+    #input-row { display: flex; gap: 8px; }
+    #user-input {
+      flex: 1;
+      padding: 10px 14px;
+      border-radius: 10px;
+      border: 1px solid rgba(255,215,0,0.3);
+      background: rgba(255,255,255,0.07);
+      color: #fff;
+      font-size: 0.9rem;
+      outline: none;
+    }
+    #user-input::placeholder { color: #777; }
+    #send-btn {
+      padding: 10px 18px;
+      background: linear-gradient(90deg, #FFD700, #FFA500);
+      border: none;
+      border-radius: 10px;
+      font-weight: 700;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+
+    .powered { color: #555; font-size: 0.7rem; text-align: center; margin-top: 8px; }
+    .powered span { color: #FFD700; }
+  </style>
+</head>
+<body>
+
+  <h1>🗳️ Vijay Wins? Ask the Oracle!</h1>
+  <p class="subtitle">AI-powered political prediction • TVK Election Bot</p>
+
+  <!-- LEAD CAPTURE -->
+  <div id="lead-section">
+    <h2>🔮 Get the Prediction!</h2>
+    <p>Enter your details to unlock the AI Oracle's verdict on Vijay's political future</p>
+    <input type="text"  id="lead-name"  placeholder="Your Name" />
+    <input type="tel"   id="lead-phone" placeholder="WhatsApp Number (10 digits)" maxlength="10"/>
+    <input type="text"  id="lead-clg"   placeholder="Your College Name" />
+    <button onclick="startChat()">🚀 Unlock the Oracle →</button>
+  </div>
+
+  <!-- CHAT BOT -->
+  <div id="chat-section">
+    <div id="chat-box"></div>
+    <div id="input-row">
+      <input type="text" id="user-input" placeholder="Ask anything about Vijay..." onkeydown="if(event.key==='Enter') sendMsg()"/>
+      <button id="send-btn" onclick="sendMsg()">➤</button>
+    </div>
+    <p class="powered">Powered by <span>GuruMantra4U</span> AI 🤖</p>
+  </div>
+
+<script>
+  // ─── Lead Data Store ───────────────────────────────────────────────
+  const leads = [];
+
+  function startChat() {
+    const name  = document.getElementById('lead-name').value.trim();
+    const phone = document.getElementById('lead-phone').value.trim();
+    const clg   = document.getElementById('lead-clg').value.trim();
+    if (!name || phone.length < 10 || !clg) {
+      alert('Please fill all fields with valid info!'); return;
+    }
+    leads.push({ name, phone, college: clg, time: new Date().toLocaleString() });
+    console.table(leads); // view leads in browser console
+
+    document.getElementById('lead-section').style.display = 'none';
+    document.getElementById('chat-section').style.display = 'block';
+
+    addMsg('bot', `🙏 Vanakkam <b>${name}</b>! Welcome to the Vijay Election Oracle.<br><br>
+      I'm trained on political trends, social media sentiment, and Tamil Nadu election history. 
+      Ask me anything or pick a topic below! 👇`);
+    showOptions(['Will Vijay Win? 🗳️', 'What is TVK? 🏛️', 'His Biggest Rival? ⚔️', 'Win % Prediction? 📊']);
+  }
+
+  // ─── Bot Brain ─────────────────────────────────────────────────────
+  const responses = {
+    'will vijay win': `🔮 <b>Oracle's Verdict: HIGH PROBABILITY!</b><br><br>
+      Here's why the data leans towards Vijay:<br>
+      ✅ Massive youth fan base across TN<br>
+      ✅ TVK launched with record-breaking public rallies<br>
+      ✅ Strong anti-incumbency mood in Tamil Nadu<br>
+      ✅ First-time voters heavily favor him<br><br>
+      📊 <b>Oracle Confidence Score: 72%</b> 🌟<br>
+      <i>But politics is unpredictable — the real oracle is YOU on election day!</i>`,
+
+    'tvk': `🏛️ <b>Tamilaga Vettri Kazhagam (TVK)</b><br><br>
+      Founded by: <b>Vijay (Joseph Vijay)</b> in 2024<br>
+      Ideology: Social justice, anti-corruption, youth empowerment<br>
+      Symbol: Rising Sun 🌅<br>
+      Core Focus: Employment, education, and farmers' rights<br><br>
+      TVK's first conference drew <b>lakhs of supporters</b> — a strong political debut!`,
+
+    'rival': `⚔️ <b>Vijay's Key Political Rivals:</b><br><br>
+      🔴 <b>DMK (Stalin)</b> - Currently ruling, strong organizational base<br>
+      🟡 <b>AIADMK (Edappadi)</b> - Traditional opposition force<br>
+      🟠 <b>BJP (Tamil Nadu unit)</b> - National party with central backing<br><br>
+      <b>Biggest challenge?</b> Breaking into a two-party state where DMK & AIADMK have deep roots for 50+ years. But Vijay's mass connect is unmatched! 💪`,
+
+    'win %': `📊 <b>Oracle Prediction Matrix</b><br><br>
+      Best Case Scenario: <b>78% win probability</b> 🟢<br>
+      Realistic Scenario: <b>55–65% win probability</b> 🟡<br>
+      Worst Case: <b>35% win probability</b> 🔴<br><br>
+      <b>Key factors:</b><br>
+      • Alliance strategy 🤝<br>
+      • Seat distribution 🗺️<br>
+      • Anti-incumbency wave 🌊<br>
+      • Ground-level party workers 👷<br><br>
+      <i>2026 Tamil Nadu elections will be historic either way!</i>`,
+
+    'alliance': `🤝 <b>Alliance Strategy - Critical Factor!</b><br><br>
+      TVK going alone = Tough but possible with 234 seats<br>
+      TVK + Congress = Stronger secular front<br>
+      TVK + Left parties = Broader coalition<br><br>
+      Political analysts say <b>Vijay's alliance choice will make or break his 2026 dream!</b> 🎯`,
+
+    'default': `🤖 Great question! Here's what the Oracle thinks:<br><br>
+      Vijay entering politics is <b>already historic</b>. Whether he wins in 2026 or builds for 2031, 
+      he's reshaping Tamil Nadu politics. The youth factor, social media presence, and mass connect 
+      give him a genuine shot! 🌟<br><br>
+      Ask me something more specific:`,
+  };
+
+  function getReply(text) {
+    const t = text.toLowerCase();
+    if (t.includes('win') && (t.includes('vijay') || t.includes('?'))) return responses['will vijay win'];
+    if (t.includes('tvk') || t.includes('party') || t.includes('tamilaga')) return responses['tvk'];
+    if (t.includes('rival') || t.includes('opponent') || t.includes('enemy') || t.includes('against')) return responses['rival'];
+    if (t.includes('%') || t.includes('percent') || t.includes('probabili') || t.includes('prediction') || t.includes('chance')) return responses['win %'];
+    if (t.includes('alliance') || t.includes('partner') || t.includes('coalition')) return responses['alliance'];
+    if (t.includes('will vijay win')) return responses['will vijay win'];
+    // quick fun
+    if (t.includes('hello') || t.includes('hi') || t.includes('vanakkam')) return `Vanakkam da! 🙏 Ask me anything about Vijay's political journey!`;
+    if (t.includes('actor') || t.includes('film') || t.includes('movie')) return `🎬 Vijay stepped away from acting to enter politics full-time! He believes <b>real change happens in government, not on screen.</b> Respect! 💪`;
+    if (t.includes('age') || t.includes('born')) return `🎂 Joseph Vijay was born on <b>22 June 1974</b>, making him around 51 years old — prime age for politics!`;
+    return responses['default'];
+  }
+
+  // ─── UI Helpers ────────────────────────────────────────────────────
+  function addMsg(who, html) {
+    const box = document.getElementById('chat-box');
+    const div = document.createElement('div');
+    div.className = `msg ${who}`;
+    div.innerHTML = `<div class="bubble">${html}</div>`;
+    box.appendChild(div);
+    box.scrollTop = box.scrollHeight;
+  }
+
+  function showOptions(opts) {
+    const box = document.getElementById('chat-box');
+    const div = document.createElement('div');
+    div.className = 'msg bot';
+    const wrap = document.createElement('div');
+    wrap.className = 'options';
+    opts.forEach(o => {
+      const b = document.createElement('button');
+      b.className = 'opt-btn';
+      b.textContent = o;
+      b.onclick = () => { handleOpt(o); wrap.remove(); };
+      wrap.appendChild(b);
+    });
+    div.appendChild(wrap);
+    box.appendChild(div);
+    box.scrollTop = box.scrollHeight;
+  }
+
+  function handleOpt(opt) {
+    addMsg('user', opt);
+    setTimeout(() => {
+      const reply = getReply(opt);
+      addMsg('bot', reply);
+      showOptions(['Will Vijay Win? 🗳️', 'Alliance Strategy? 🤝', 'Win % Prediction? 📊', 'Ask something else']);
+    }, 400);
+  }
+
+  function sendMsg() {
+    const inp = document.getElementById('user-input');
+    const text = inp.value.trim();
+    if (!text) return;
+    addMsg('user', text);
+    inp.value = '';
+    setTimeout(() => {
+      addMsg('bot', getReply(text));
+      showOptions(['Will Vijay Win? 🗳️', 'TVK Party? 🏛️', 'His Rivals? ⚔️', 'Win % Prediction? 📊']);
+    }, 500);
+  }
+</script>
+</body>
+</html>
